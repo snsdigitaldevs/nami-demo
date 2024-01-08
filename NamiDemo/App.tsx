@@ -18,6 +18,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import { Nami } from 'react-native-nami-sdk';
 
 import {
   Colors,
@@ -63,6 +64,16 @@ const App = () => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  React.useEffect(() => {
+    Nami.configure({
+      "appPlatformID-android": "944c9f38-1dbf-4300-acf8-6cb074830612",
+      "appPlatformID-apple": "e8d73bdf-6109-4c83-84f6-1ffc22346570",
+      logLevel: "DEBUG",
+      namiCommands: ["validateProductGroups", "paywallProductErrorStates"],
+      namiLanguageCode: "en",
+    });
+  }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
