@@ -10,6 +10,7 @@
 
 import React, {type PropsWithChildren} from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -72,6 +73,7 @@ const App = () => {
       logLevel: "DEBUG",
       namiCommands: ["validateProductGroups", "paywallProductErrorStates"],
       namiLanguageCode: "en",
+      initialConfig: JSON.stringify(Platform.OS === "android" ? require("./src/nami/nami_config_android.json") : require("./src/nami/nami_config_ios.json")),
     });
   }, []);
 
