@@ -16,10 +16,11 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
-import { Nami } from 'react-native-nami-sdk';
+import {Nami, NamiCampaignManager} from 'react-native-nami-sdk';
 
 import {
   Colors,
@@ -68,14 +69,40 @@ const App = () => {
 
   React.useEffect(() => {
     Nami.configure({
-      "appPlatformID-android": "944c9f38-1dbf-4300-acf8-6cb074830612",
-      "appPlatformID-apple": "e8d73bdf-6109-4c83-84f6-1ffc22346570",
-      logLevel: "DEBUG",
-      namiCommands: ["validateProductGroups", "paywallProductErrorStates"],
-      namiLanguageCode: "en",
-      initialConfig: JSON.stringify(Platform.OS === "android" ? require("./src/nami/nami_config_android.json") : require("./src/nami/nami_config_ios.json")),
+      'appPlatformID-android': '944c9f38-1dbf-4300-acf8-6cb074830612',
+      'appPlatformID-apple': 'e8d73bdf-6109-4c83-84f6-1ffc22346570',
+      logLevel: 'DEBUG',
+      namiCommands: ['validateProductGroups', 'paywallProductErrorStates'],
+      namiLanguageCode: 'en',
+      initialConfig: JSON.stringify(
+        Platform.OS === 'android'
+          ? require('./src/nami/nami_config_android.json')
+          : require('./src/nami/nami_config_ios.json'),
+      ),
     });
   }, []);
+
+  const showNamiPaywall = () => {
+    const context = {
+      productGroups: ['9781797136998_7day', '9781797112237'],
+      customAttributes: {},
+    };
+    NamiCampaignManager.launch(
+      'onboarding',
+      undefined,
+      context,
+      (success, error) => {
+        if (success) {
+          console.log('Nami paywall launch successfully.');
+        } else {
+          console.log(error);
+        }
+      },
+      action => {
+        console.log('Nami paywall action = ' + action);
+      },
+    );
+  };
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -91,6 +118,11 @@ const App = () => {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
+          <TouchableOpacity
+            onPress={showNamiPaywall}
+            style={styles.paywallButton}>
+            <Text style={styles.paywallText}>Show Nami paywall</Text>
+          </TouchableOpacity>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
@@ -127,6 +159,21 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: '700',
+  },
+  paywallButton: {
+    backgroundColor: 'blue',
+    height: 40,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  paywallText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
